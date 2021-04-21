@@ -2,11 +2,11 @@
 # 设置时区并同步时间
 ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 if ! crontab -l |grep ntpdate &>/dev/null ; then
-    (echo "* 1 * * * ntpdate time.windows.com >/dev/null 2>&1";crontab -l) |crontab 
+    (echo "* 1 * * * ntpdate time.windows.com >/dev/null 2>&1";crontab -l) |crontab
 fi
 
 # 禁用selinux
-sed -i '/SELINUX/{s/permissive/disabled/}' /etc/selinux/config
+sed -i '/SELINUX/{s/enforcing/disabled/}' /etc/selinux/config
 
 # 关闭防火墙
 if egrep "7.[0-9]" /etc/redhat-release &>/dev/null; then
@@ -28,16 +28,16 @@ if ! grep "TMOUT=600" /etc/profile &>/dev/null; then
 fi
 
 # 禁止root远程登录
-sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+#sed -i 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
 
 # 禁止定时任务向发送邮件
-sed -i 's/^MAILTO=root/MAILTO=""/' /etc/crontab 
+sed -i 's/^MAILTO=root/MAILTO=""/' /etc/crontab
 
 # 设置最大打开文件数
 if ! grep "* soft nofile 65535" /etc/security/limits.conf &>/dev/null; then
 cat >> /etc/security/limits.conf << EOF
-    * soft nofile 65535
-    * hard nofile 65535
+* soft nofile 65535
+* hard nofile 65535
 EOF
 fi
 
@@ -47,7 +47,7 @@ net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_max_tw_buckets = 20480
 net.ipv4.tcp_max_syn_backlog = 20480
 net.core.netdev_max_backlog = 262144
-net.ipv4.tcp_fin_timeout = 20  
+net.ipv4.tcp_fin_timeout = 20
 EOF
 
 # 减少SWAP使用
